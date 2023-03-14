@@ -1,4 +1,4 @@
-# Exemple Canvas JavaFX i NodeJS #
+# Exemple Canvas JavaFX (Pong) #
 
 En aquest projecte hi ha un exemple de Pong en JavaFX
 
