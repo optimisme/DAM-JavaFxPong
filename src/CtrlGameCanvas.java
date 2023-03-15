@@ -292,7 +292,7 @@ public class CtrlGameCanvas {
             final double bM = (bY1 - bY0) / (bX1 - bX0);
             final double bB = bY0 - bM * bX0;
 
-            final double tolerance = 1e-9;
+            final double tolerance = 1e-5;
             if (Math.abs(aM - bM) < tolerance) { 
                 return null;
             }
@@ -302,7 +302,7 @@ public class CtrlGameCanvas {
         }
     
         // Check if the intersection point is within the bounding boxes of both line segments
-        final double boundingBoxTolerance = 1e-9;
+        final double boundingBoxTolerance = 1e-5;
         final boolean withinA = x >= Math.min(aX0, aX1) - boundingBoxTolerance &&
                                 x <= Math.max(aX0, aX1) + boundingBoxTolerance &&
                                 y >= Math.min(aY0, aY1) - boundingBoxTolerance &&
