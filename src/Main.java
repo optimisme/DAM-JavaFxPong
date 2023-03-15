@@ -3,6 +3,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
@@ -32,9 +33,8 @@ public class Main extends Application {
         stage.setTitle("JavaFX - Pong");
         stage.setMinWidth(windowWidth);
         stage.setMinHeight(windowHeight);
+        stage.addEventHandler(WindowEvent.WINDOW_SHOWN, event -> { ctrlGame.drawingStart(); });
         stage.show();
-
-        ctrlGame.drawingStart();
 
         // Add icon only if not Mac
         if (!System.getProperty("os.name").contains("Mac")) {

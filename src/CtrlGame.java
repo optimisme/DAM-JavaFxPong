@@ -40,9 +40,12 @@ public class CtrlGame implements Initializable {
 
     public void updateCanvasSize () {
 
+        final double width = UtilsViews.parentContainer.getWidth();
+        final double height = UtilsViews.parentContainer.getHeight();
+
         // Set Canvas size
-        canvas.setWidth(UtilsViews.parentContainer.getWidth());
-        canvas.setHeight(UtilsViews.parentContainer.getHeight());
+        canvas.setWidth(width);
+        canvas.setHeight(height);
     }
 
     public void keyEvent (KeyEvent evt) {
