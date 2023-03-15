@@ -7,8 +7,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class Drawing {
-
-    long[] frameTimes = new long[120];
   
     private Canvas cnv;
     private GraphicsContext gc;
@@ -21,17 +19,18 @@ public class Drawing {
     private int playerPoints = 0;
     private double playerX = Double.POSITIVE_INFINITY;
     private double playerY = Double.POSITIVE_INFINITY;
-    private double playerWidth = 200;
-    private double playerHalf = playerWidth / 2;
-    private double playerHeight = 5;
-    private double playerSpeed = 5;
+    private final double playerWidth = 200;
+    private final double playerHalf = playerWidth / 2;
+    private final double playerHeight = 5;
+    private final double playerSpeed = 5;
     public String playerDirection = "none";
 
     private double ballX = Double.POSITIVE_INFINITY;
     private double ballY = Double.POSITIVE_INFINITY;
-    private double ballSize = 15;
-    private double ballHalf = ballSize / 2;
+    private final double ballSize = 15;
+    private final double ballHalf = ballSize / 2;
     private double ballSpeed = 2;
+    private final double ballSpeedIncrement = 0.25;
     private String ballDirection = "upRight";
     
     public Drawing () { }
@@ -59,10 +58,10 @@ public class Drawing {
     // Animar
     private void run(double fps) {
 
-        double speedFactor = fps / 60;
+        final double speedFactor = fps / 60;
 
-        double boardWidth = cnv.getWidth();
-        double boardHeight = cnv.getHeight();
+        final double boardWidth = cnv.getWidth();
+        final double boardHeight = cnv.getHeight();
 
         // Move player
         switch (playerDirection) {
@@ -75,8 +74,8 @@ public class Drawing {
         }
 
         // Keep player in bounds
-        double playerMinX = playerHalf;
-        double playerMaxX = boardWidth - playerHalf;
+        final double playerMinX = playerHalf;
+        final double playerMaxX = boardWidth - playerHalf;
 
         if (playerX == Double.POSITIVE_INFINITY) {
 
@@ -119,17 +118,17 @@ public class Drawing {
         }
 
         // Check ball collision with board sides
-        double[][] lineBall = { {ballX, ballY}, {ballNextX, ballNextY} };
+        final double[][] lineBall = { {ballX, ballY}, {ballNextX, ballNextY} };
 
-        double[][] lineBoardLeft = { {borderSize, 0}, {borderSize, boardHeight} };
-        double[] intersectionLeft = findIntersection(lineBall, lineBoardLeft);
+        final double[][] lineBoardLeft = { {borderSize, 0}, {borderSize, boardHeight} };
+        final double[] intersectionLeft = findIntersection(lineBall, lineBoardLeft);
 
-        double boardMaxX = boardWidth - borderSize;
-        double[][] lineBoardRight = { {boardMaxX, 0}, {boardMaxX, boardHeight} };
-        double[] intersectionRight = findIntersection(lineBall, lineBoardRight);
+        final double boardMaxX = boardWidth - borderSize;
+        final double[][] lineBoardRight = { {boardMaxX, 0}, {boardMaxX, boardHeight} };
+        final double[] intersectionRight = findIntersection(lineBall, lineBoardRight);
 
-        double[][] lineBoardTop = { {0, borderSize}, {boardWidth, borderSize} };
-        double[] intersectionTop = findIntersection(lineBall, lineBoardTop);
+        final double[][] lineBoardTop = { {0, borderSize}, {boardWidth, borderSize} };
+        final double[] intersectionTop = findIntersection(lineBall, lineBoardTop);
 
         if (intersectionLeft[0] != Double.POSITIVE_INFINITY) {
             switch (ballDirection) {
@@ -140,7 +139,7 @@ public class Drawing {
                     ballDirection = "downRight";
                     break;
             }
-            ballX = intersectionLeft[0] + ballHalf;
+            ballX = intersectionLeft[0] + 1;
             ballY = intersectionLeft[1];
 
         } else if (intersectionRight[0] != Double.POSITIVE_INFINITY) {
@@ -153,7 +152,7 @@ public class Drawing {
                     ballDirection = "downLeft";
                     break;
             }
-            ballX = intersectionRight[0] - ballHalf;
+            ballX = intersectionRight[0] - 1;
             ballY = intersectionRight[1];
 
         } else if (intersectionTop[0] != Double.POSITIVE_INFINITY) {
@@ -167,7 +166,7 @@ public class Drawing {
                     break;
             }
             ballX = intersectionTop[0];
-            ballY = intersectionTop[1] + ballHalf;
+            ballY = intersectionTop[1] + 1;
 
         } else {
             if (ballNextY > boardHeight) {
@@ -179,8 +178,9 @@ public class Drawing {
         }
 
         // Check ball collision with player
-        double[][] linePlayer = { {playerX - playerHalf, playerY}, {playerX + playerHalf, playerY} };
-        double[] intersectionPlayer = findIntersection(lineBall, linePlayer);
+        final double[][] linePlayer = { {playerX - playerHalf, playerY}, {playerX + playerHalf, playerY} };
+        final double[] intersectionPlayer = findIntersection(lineBall, linePlayer);
+
         if (intersectionPlayer[0] != Double.POSITIVE_INFINITY) {
 
             switch (ballDirection) {
@@ -192,9 +192,9 @@ public class Drawing {
                     break;
             }
             ballX = intersectionPlayer[0];
-            ballY = intersectionPlayer[1] - ballHalf;
+            ballY = intersectionPlayer[1] - 1;
             playerPoints = playerPoints + 1;
-            ballSpeed = ballSpeed + 0.2;
+            ballSpeed = ballSpeed + ballSpeedIncrement;
         }
 
         // Set player Y position
@@ -231,13 +231,13 @@ public class Drawing {
 
         // Draw game over text
         if (gameStatus.equals("gameOver")) {
-            double boardCenterX = cnv.getWidth() / 2;
-            double boardCenterY = cnv.getHeight() / 2;
+            final double boardCenterX = cnv.getWidth() / 2;
+            final double boardCenterY = cnv.getHeight() / 2;
 
             gc.setFont(new Font("Arial", 40));
             drawText(gc, "GAME OVER", boardCenterX, boardCenterY - 20, "center");
 
-            gc.setFont(new Font("Arial", 25));
+            gc.setFont(new Font("Arial", 20));
             drawText(gc, "You are a loser!", boardCenterX, boardCenterY + 20, "center");
         }
     }
@@ -245,8 +245,8 @@ public class Drawing {
     public static void drawText(GraphicsContext gc, String text, double x, double y, String alignment) {
         Text tempText = new Text(text);
         tempText.setFont(gc.getFont());
-        double textWidth = tempText.getLayoutBounds().getWidth();
-        double textHeight = tempText.getLayoutBounds().getHeight();
+        final double textWidth = tempText.getLayoutBounds().getWidth();
+        final double textHeight = tempText.getLayoutBounds().getHeight();
         switch (alignment) {
             case "center":
                 x = x - textWidth / 2;
@@ -266,15 +266,15 @@ public class Drawing {
     public static double[] findIntersection(double[][] lineA, double[][] lineB) {
         double[] result = new double[2];
     
-        double aX0 = lineA[0][0];
-        double aY0 = lineA[0][1];
-        double aX1 = lineA[1][0];
-        double aY1 = lineA[1][1];
+        final double aX0 = lineA[0][0];
+        final double aY0 = lineA[0][1];
+        final double aX1 = lineA[1][0];
+        final double aY1 = lineA[1][1];
     
-        double bX0 = lineB[0][0];
-        double bY0 = lineB[0][1];
-        double bX1 = lineB[1][0];
-        double bY1 = lineB[1][1];
+        final double bX0 = lineB[0][0];
+        final double bY0 = lineB[0][1];
+        final double bX1 = lineB[1][0];
+        final double bY1 = lineB[1][1];
     
         double x, y;
     
@@ -285,20 +285,20 @@ public class Drawing {
                 return result;
             }
             x = aX0;
-            double bM = (bY1 - bY0) / (bX1 - bX0);
-            double bB = bY0 - bM * bX0;
+            final double bM = (bY1 - bY0) / (bX1 - bX0);
+            final double bB = bY0 - bM * bX0;
             y = bM * x + bB;
         } else if (bX1 == bX0) { // lineB is vertical
             x = bX0;
-            double aM = (aY1 - aY0) / (aX1 - aX0);
-            double aB = aY0 - aM * aX0;
+            final double aM = (aY1 - aY0) / (aX1 - aX0);
+            final double aB = aY0 - aM * aX0;
             y = aM * x + aB;
         } else {
-            double aM = (aY1 - aY0) / (aX1 - aX0);
-            double aB = aY0 - aM * aX0;
+            final double aM = (aY1 - aY0) / (aX1 - aX0);
+            final double aB = aY0 - aM * aX0;
     
-            double bM = (bY1 - bY0) / (bX1 - bX0);
-            double bB = bY0 - bM * bX0;
+            final double bM = (bY1 - bY0) / (bX1 - bX0);
+            final double bB = bY0 - bM * bX0;
     
             if (aM == bM) {
                 result[0] = Double.POSITIVE_INFINITY;
@@ -311,8 +311,8 @@ public class Drawing {
         }
     
         // Check if the intersection point is within the bounding boxes of both line segments
-        boolean withinA = x >= Math.min(aX0, aX1) && x <= Math.max(aX0, aX1) && y >= Math.min(aY0, aY1) && y <= Math.max(aY0, aY1);
-        boolean withinB = x >= Math.min(bX0, bX1) && x <= Math.max(bX0, bX1) && y >= Math.min(bY0, bY1) && y <= Math.max(bY0, bY1);
+        final boolean withinA = x >= Math.min(aX0, aX1) && x <= Math.max(aX0, aX1) && y >= Math.min(aY0, aY1) && y <= Math.max(aY0, aY1);
+        final boolean withinB = x >= Math.min(bX0, bX1) && x <= Math.max(bX0, bX1) && y >= Math.min(bY0, bY1) && y <= Math.max(bY0, bY1);
     
         if (withinA && withinB) {
             result[0] = x;
