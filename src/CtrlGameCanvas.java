@@ -22,7 +22,8 @@ public class CtrlGameCanvas {
     private final double playerWidth = 200;
     private final double playerHalf = playerWidth / 2;
     private final double playerHeight = 5;
-    private final double playerSpeed = 250;
+    private double playerSpeed = 250;
+    private final double playerSpeedIncrement = 15;
     public String playerDirection = "none";
 
     private double ballX = Double.POSITIVE_INFINITY;
@@ -189,6 +190,7 @@ public class CtrlGameCanvas {
             ballY = intersectionPlayer[1] - 1;
             playerPoints = playerPoints + 1;
             ballSpeed = ballSpeed + ballSpeedIncrement;
+            playerSpeed = playerSpeed + playerSpeedIncrement;
         }
 
         // Set player Y position
