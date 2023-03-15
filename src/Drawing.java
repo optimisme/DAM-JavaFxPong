@@ -31,7 +31,7 @@ public class Drawing {
     private double ballY = Double.POSITIVE_INFINITY;
     private double ballSize = 15;
     private double ballHalf = ballSize / 2;
-    private double ballSpeed = 1.5;
+    private double ballSpeed = 2;
     private String ballDirection = "upRight";
     
     public Drawing () { }
@@ -64,13 +64,36 @@ public class Drawing {
         double boardWidth = cnv.getWidth();
         double boardHeight = cnv.getHeight();
 
-        double playerMinX = borderSize + playerHalf;
-        double playerMaxX = boardWidth - borderSize - playerHalf;
+        // Move player
+        switch (playerDirection) {
+            case "right":
+                playerX = playerX + playerSpeed * speedFactor; 
+                break;
+            case "left":
+                playerX = playerX - playerSpeed * speedFactor;
+                break;
+        }
 
-        // Init ball at board center
-        if (ballX == Double.POSITIVE_INFINITY) {
+        // Keep player in bounds
+        double playerMinX = playerHalf;
+        double playerMaxX = boardWidth - playerHalf;
+
+        if (playerX == Double.POSITIVE_INFINITY) {
+
+            // Init player and ball position
+            playerX = boardWidth / 2;
             ballX = boardWidth / 2;
             ballY = boardHeight / 2;
+
+        }
+        
+        if (playerX < playerMinX) {
+
+            playerX = playerMinX;
+
+        } else if (playerX > playerMaxX) {
+
+            playerX = playerMaxX;
         }
 
         // Move ball
@@ -155,25 +178,6 @@ public class Drawing {
             }
         }
 
-        // Move player
-        switch (playerDirection) {
-            case "right":
-                playerX = playerX + playerSpeed * speedFactor; 
-                break;
-            case "left":
-                playerX = playerX - playerSpeed * speedFactor;
-                break;
-        }
-
-        // Keep player in bounds
-        if (playerX == Double.POSITIVE_INFINITY) {
-            playerX = boardWidth / 2;
-        } else if (playerX < playerMinX) {
-            playerX = playerMinX;
-        } else if (playerX > playerMaxX) {
-            playerX = playerMaxX;
-        }
-
         // Check ball collision with player
         double[][] linePlayer = { {playerX - playerHalf, playerY}, {playerX + playerHalf, playerY} };
         double[] intersectionPlayer = findIntersection(lineBall, linePlayer);
@@ -227,14 +231,14 @@ public class Drawing {
 
         // Draw game over text
         if (gameStatus.equals("gameOver")) {
-            double centerX = cnv.getWidth() / 2;
-            double centerY = cnv.getHeight() / 2;
+            double boardCenterX = cnv.getWidth() / 2;
+            double boardCenterY = cnv.getHeight() / 2;
 
             gc.setFont(new Font("Arial", 40));
-            drawText(gc, "GAME OVER", centerX, centerY - 20, "center");
+            drawText(gc, "GAME OVER", boardCenterX, boardCenterY - 20, "center");
 
             gc.setFont(new Font("Arial", 25));
-            drawText(gc, "You are a loser!", centerX, centerY + 20, "center");
+            drawText(gc, "You are a loser!", boardCenterX, boardCenterY + 20, "center");
         }
     }
 
