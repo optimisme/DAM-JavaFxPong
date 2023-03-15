@@ -212,7 +212,6 @@ public class Drawing {
 
         // Draw ball
         gc.setFill(Color.BLACK);
-        //gc.strokeRect(ballX, ballY, ballSize, ballSize);
         gc.fillArc(ballX - ballHalf, ballY - ballHalf, ballSize, ballSize, 0.0, 360, ArcType.ROUND);
 
         // Draw player
@@ -224,31 +223,40 @@ public class Drawing {
         gc.setFill(Color.BLACK);
         gc.setFont(new Font("Arial", 20));
         String pointsText = "Points: " + playerPoints;
-        Text tempText = new Text(pointsText);
-        tempText.setFont(gc.getFont());
-        double textWidth = tempText.getLayoutBounds().getWidth();        
-        double textPositionX = cnv.getWidth() - 25 - textWidth;
-        gc.fillText(pointsText, textPositionX, 40);
+        drawText(gc, pointsText, cnv.getWidth() - 20, 20, "right");
 
         // Draw game over text
         if (gameStatus.equals("gameOver")) {
+            double centerX = cnv.getWidth() / 2;
+            double centerY = cnv.getHeight() / 2;
+
             gc.setFont(new Font("Arial", 40));
-            String gameOverText = "GAME OVER";
-            tempText = new Text(gameOverText);
-            tempText.setFont(gc.getFont());
-            textWidth = tempText.getLayoutBounds().getWidth();
-            double textPositionY = cnv.getHeight() / 2;
-            textPositionX = (cnv.getWidth() - textWidth) / 2;
-            gc.fillText(gameOverText, textPositionX, textPositionY);
+            drawText(gc, "GAME OVER", centerX, centerY - 20, "center");
 
             gc.setFont(new Font("Arial", 25));
-            String loserText = "You are a loser!";
-            tempText = new Text(loserText);
-            tempText.setFont(gc.getFont());
-            textWidth = tempText.getLayoutBounds().getWidth();
-            textPositionX = (cnv.getWidth() - textWidth) / 2;
-            gc.fillText(loserText, textPositionX, textPositionY + 40);
+            drawText(gc, "You are a loser!", centerX, centerY + 20, "center");
         }
+    }
+
+    public static void drawText(GraphicsContext gc, String text, double x, double y, String alignment) {
+        Text tempText = new Text(text);
+        tempText.setFont(gc.getFont());
+        double textWidth = tempText.getLayoutBounds().getWidth();
+        double textHeight = tempText.getLayoutBounds().getHeight();
+        switch (alignment) {
+            case "center":
+                x = x - textWidth / 2;
+                y = y + textHeight / 2;
+                break;
+            case "right":
+                x = x - textWidth;
+                y = y + textHeight / 2;
+                break;
+            case "left":
+                y = y + textHeight / 2;
+                break;
+        }
+        gc.fillText(text, x, y);
     }
 
     public static double[] findIntersection(double[][] lineA, double[][] lineB) {
