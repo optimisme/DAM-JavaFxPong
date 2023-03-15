@@ -61,8 +61,6 @@ public class CtrlGameCanvas {
     // Animar
     private void run(double fps) {
 
-        if (fps == 0) return;
-
         final double boardWidth = cnv.getWidth();
         final double boardHeight = cnv.getHeight();
 
