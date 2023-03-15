@@ -6,7 +6,7 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class Drawing {
+public class CtrlGameCanvas {
   
     private Canvas cnv;
     private GraphicsContext gc;
@@ -33,7 +33,7 @@ public class Drawing {
     private final double ballSpeedIncrement = 0.25;
     private String ballDirection = "upRight";
     
-    public Drawing () { }
+    public CtrlGameCanvas () { }
 
     // Iniciar el context i bucle de dibuix
     public void start (Canvas canvas) {
@@ -49,7 +49,7 @@ public class Drawing {
         playerX = cnv.getWidth() / 2;
 
         // Init drawing bucle
-        animationTimer = new DrawingFps(this::run, this::draw);
+        animationTimer = new UtilsFps(this::run, this::draw);
         animationTimer.start();
     }
 
