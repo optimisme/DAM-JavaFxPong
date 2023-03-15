@@ -214,14 +214,14 @@ public class Drawing {
         gc.strokeRect(0, 0, cnv.getWidth(), borderSize);
         gc.strokeRect(cnv.getWidth() - borderSize, 0, borderSize, cnv.getHeight());
 
-        // Draw ball
-        gc.setFill(Color.BLACK);
-        gc.fillArc(ballX - ballHalf, ballY - ballHalf, ballSize, ballSize, 0.0, 360, ArcType.ROUND);
-
         // Draw player
         gc.setStroke(Color.GREEN);
         gc.setLineWidth(playerHeight);
         gc.strokeRect(playerX - playerHalf, playerY, playerWidth, playerHeight);
+
+        // Draw ball
+        gc.setFill(Color.BLACK);
+        gc.fillArc(ballX - ballHalf, ballY - ballHalf, ballSize, ballSize, 0.0, 360, ArcType.ROUND);
 
         // Draw text with points
         gc.setFill(Color.BLACK);
