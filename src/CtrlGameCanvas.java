@@ -22,15 +22,15 @@ public class CtrlGameCanvas {
     private final double playerWidth = 200;
     private final double playerHalf = playerWidth / 2;
     private final double playerHeight = 5;
-    private final double playerSpeed = 5;
+    private final double playerSpeed = 250;
     public String playerDirection = "none";
 
     private double ballX = Double.POSITIVE_INFINITY;
     private double ballY = Double.POSITIVE_INFINITY;
     private final double ballSize = 15;
     private final double ballHalf = ballSize / 2;
-    private double ballSpeed = 2;
-    private final double ballSpeedIncrement = 0.25;
+    private double ballSpeed = 200;
+    private final double ballSpeedIncrement = 25;
     private String ballDirection = "upRight";
     
     public CtrlGameCanvas () { }
@@ -61,7 +61,7 @@ public class CtrlGameCanvas {
     // Animar
     private void run(double fps) {
 
-        final double speedFactor = fps / 60;
+        if (fps == 0) return;
 
         final double boardWidth = cnv.getWidth();
         final double boardHeight = cnv.getHeight();
@@ -69,10 +69,10 @@ public class CtrlGameCanvas {
         // Move player
         switch (playerDirection) {
             case "right":
-                playerX = playerX + playerSpeed * speedFactor; 
+                playerX = playerX + playerSpeed / fps; 
                 break;
             case "left":
-                playerX = playerX - playerSpeed * speedFactor;
+                playerX = playerX - playerSpeed / fps;
                 break;
         }
 
@@ -94,20 +94,20 @@ public class CtrlGameCanvas {
         double ballNextY = ballY;
         switch (ballDirection) {
             case "upRight": 
-                ballNextX = ballX + ballSpeed * speedFactor;
-                ballNextY = ballY - ballSpeed * speedFactor;
+                ballNextX = ballX + ballSpeed / fps;
+                ballNextY = ballY - ballSpeed / fps;
                 break;
             case "upLeft": 
-                ballNextX = ballX - ballSpeed * speedFactor;
-                ballNextY = ballY - ballSpeed * speedFactor;
+                ballNextX = ballX - ballSpeed / fps;
+                ballNextY = ballY - ballSpeed / fps;
                 break;
             case "downRight": 
-                ballNextX = ballX + ballSpeed * speedFactor;
-                ballNextY = ballY + ballSpeed * speedFactor;
+                ballNextX = ballX + ballSpeed / fps;
+                ballNextY = ballY + ballSpeed / fps;
                 break;
             case "downLeft": 
-                ballNextX = ballX - ballSpeed * speedFactor;
-                ballNextY = ballY + ballSpeed * speedFactor;
+                ballNextX = ballX - ballSpeed / fps;
+                ballNextY = ballY + ballSpeed / fps;
                 break;
         }
 
