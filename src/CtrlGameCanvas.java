@@ -110,7 +110,7 @@ public class CtrlGameCanvas {
                 ballNextY = ballY + ballSpeed / fps;
                 break;
         }
-        System.out.println(fps + ">" + ballNextX + " " + ballSpeed / fps);
+
         // Check ball collision with board sides
         final double[][] lineBall = { {ballX, ballY}, {ballNextX, ballNextY} };
 
