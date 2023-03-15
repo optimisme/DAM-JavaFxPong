@@ -12,7 +12,7 @@ public class CtrlGame implements Initializable {
     private AnchorPane anchor;
 
     @FXML
-    private Canvas canvas;
+    public Canvas canvas;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -24,19 +24,12 @@ public class CtrlGame implements Initializable {
         UtilsViews.parentContainer.widthProperty().addListener((observable, oldValue, newvalue) -> {
             updateCanvasSize();
         });
-
-        // Start drawing loop
-        Main.drawing.start(canvas);
-        updateCanvasSize();
     }
 
     public void updateCanvasSize () {
-        // Container sizes
-        double width = UtilsViews.parentContainer.getWidth();
-        double height = UtilsViews.parentContainer.getHeight();
 
-        // Start Canvas size
-        canvas.setWidth(width);
-        canvas.setHeight(height);
+        // Set Canvas size
+        canvas.setWidth(UtilsViews.parentContainer.getWidth());
+        canvas.setHeight(UtilsViews.parentContainer.getHeight());
     }
 }

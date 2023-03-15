@@ -40,13 +40,16 @@ public class Drawing {
 
         cnv = canvas;
 
-        // Definir contexte de dibuix
+        // Define drawing context
         gc = canvas.getGraphicsContext2D();
 
-        // Iniciar el bucle de dibuix
-        animationTimer = new DrawingFps(this::run, this::draw);
+        // Set initial positions
+        ballX = cnv.getWidth() / 2;
+        ballY = cnv.getHeight() / 2;
+        playerX = cnv.getWidth() / 2;
 
-        // Iniciar el bucle de dibuix
+        // Init drawing bucle
+        animationTimer = new DrawingFps(this::run, this::draw);
         animationTimer.start();
     }
 
@@ -77,15 +80,6 @@ public class Drawing {
         final double playerMinX = playerHalf;
         final double playerMaxX = boardWidth - playerHalf;
 
-        if (playerX == Double.POSITIVE_INFINITY) {
-
-            // Init player and ball position
-            playerX = boardWidth / 2;
-            ballX = boardWidth / 2;
-            ballY = boardHeight / 2;
-
-        }
-        
         if (playerX < playerMinX) {
 
             playerX = playerMinX;

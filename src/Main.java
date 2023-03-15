@@ -1,5 +1,6 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -22,7 +23,7 @@ public class Main extends Application {
         final int windowHeight = 600;
 
         UtilsViews.parentContainer.setStyle("-fx-font: 14 arial;");
-        UtilsViews.addView(getClass(), "ViewPost", "./assets/viewGame.fxml");
+        UtilsViews.addView(getClass(), "ViewGame", "./assets/viewGame.fxml");
         
         Scene scene = new Scene(UtilsViews.parentContainer);
         scene.addEventFilter(KeyEvent.ANY, keyEvent -> { keyEvent(keyEvent); });
@@ -33,6 +34,9 @@ public class Main extends Application {
         stage.setMinWidth(windowWidth);
         stage.setMinHeight(windowHeight);
         stage.show();
+
+        // Start drawing loop
+        drawing.start(((CtrlGame) UtilsViews.getController("ViewGame")).canvas);
 
         // Add icon only if not Mac
         if (!System.getProperty("os.name").contains("Mac")) {
