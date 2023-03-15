@@ -10,13 +10,13 @@ import javafx.scene.layout.AnchorPane;
 
 public class CtrlGame implements Initializable {
 
-    private static CtrlGameCanvas drawing = new CtrlGameCanvas();
-
     @FXML
     private AnchorPane anchor;
 
     @FXML
     private Canvas canvas;
+
+    private static CtrlGameCanvas drawing = new CtrlGameCanvas();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -30,8 +30,12 @@ public class CtrlGame implements Initializable {
         });
     }
 
-    public void startDrawing () {
+    public void drawingStart () {
         drawing.start(canvas);
+    }
+
+    public void drawingStop () {
+        drawing.stop();
     }
 
     public void updateCanvasSize () {

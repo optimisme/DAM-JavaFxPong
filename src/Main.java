@@ -34,7 +34,7 @@ public class Main extends Application {
         stage.setMinHeight(windowHeight);
         stage.show();
 
-        ctrlGame.startDrawing();
+        ctrlGame.drawingStart();
 
         // Add icon only if not Mac
         if (!System.getProperty("os.name").contains("Mac")) {
@@ -45,6 +45,7 @@ public class Main extends Application {
 
     @Override
     public void stop() { 
+        ctrlGame.drawingStop();
         System.exit(1); // Kill all executor services
     }
 }
