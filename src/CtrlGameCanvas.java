@@ -124,7 +124,7 @@ public class CtrlGameCanvas {
         final double[][] lineBoardTop = { {0, borderSize}, {boardWidth, borderSize} };
         final double[] intersectionTop = findIntersection(lineBall, lineBoardTop);
 
-        if (intersectionLeft[0] != Double.POSITIVE_INFINITY) {
+        if (intersectionLeft != null) {
             switch (ballDirection) {
                 case "upLeft": 
                     ballDirection = "upRight";
@@ -136,7 +136,7 @@ public class CtrlGameCanvas {
             ballX = intersectionLeft[0] + 1;
             ballY = intersectionLeft[1];
 
-        } else if (intersectionRight[0] != Double.POSITIVE_INFINITY) {
+        } else if (intersectionRight != null) {
 
             switch (ballDirection) {
                 case "upRight": 
@@ -149,7 +149,7 @@ public class CtrlGameCanvas {
             ballX = intersectionRight[0] - 1;
             ballY = intersectionRight[1];
 
-        } else if (intersectionTop[0] != Double.POSITIVE_INFINITY) {
+        } else if (intersectionTop != null) {
 
             switch (ballDirection) {
                 case "upRight": 
@@ -175,7 +175,7 @@ public class CtrlGameCanvas {
         final double[][] linePlayer = { {playerX - playerHalf, playerY}, {playerX + playerHalf, playerY} };
         final double[] intersectionPlayer = findIntersection(lineBall, linePlayer);
 
-        if (intersectionPlayer[0] != Double.POSITIVE_INFINITY) {
+        if (intersectionPlayer != null) {
 
             switch (ballDirection) {
                 case "downRight": 
@@ -274,9 +274,7 @@ public class CtrlGameCanvas {
     
         if (aX1 == aX0) { // lineA is vertical
             if (bX1 == bX0) { // lineB is vertical too
-                result[0] = Double.POSITIVE_INFINITY;
-                result[1] = Double.POSITIVE_INFINITY;
-                return result;
+                return null;
             }
             x = aX0;
             final double bM = (bY1 - bY0) / (bX1 - bX0);
@@ -293,11 +291,10 @@ public class CtrlGameCanvas {
     
             final double bM = (bY1 - bY0) / (bX1 - bX0);
             final double bB = bY0 - bM * bX0;
-    
-            if (aM == bM) {
-                result[0] = Double.POSITIVE_INFINITY;
-                result[1] = Double.POSITIVE_INFINITY;
-                return result;
+
+            final double tolerance = 1e-9;
+            if (Math.abs(aM - bM) < tolerance) { 
+                return null;
             }
     
             x = (bB - aB) / (aM - bM);
@@ -305,15 +302,21 @@ public class CtrlGameCanvas {
         }
     
         // Check if the intersection point is within the bounding boxes of both line segments
-        final boolean withinA = x >= Math.min(aX0, aX1) && x <= Math.max(aX0, aX1) && y >= Math.min(aY0, aY1) && y <= Math.max(aY0, aY1);
-        final boolean withinB = x >= Math.min(bX0, bX1) && x <= Math.max(bX0, bX1) && y >= Math.min(bY0, bY1) && y <= Math.max(bY0, bY1);
-    
+        final double boundingBoxTolerance = 1e-9;
+        final boolean withinA = x >= Math.min(aX0, aX1) - boundingBoxTolerance &&
+                                x <= Math.max(aX0, aX1) + boundingBoxTolerance &&
+                                y >= Math.min(aY0, aY1) - boundingBoxTolerance &&
+                                y <= Math.max(aY0, aY1) + boundingBoxTolerance;
+        final boolean withinB = x >= Math.min(bX0, bX1) - boundingBoxTolerance &&
+                                x <= Math.max(bX0, bX1) + boundingBoxTolerance &&
+                                y >= Math.min(bY0, bY1) - boundingBoxTolerance &&
+                                y <= Math.max(bY0, bY1) + boundingBoxTolerance;
+
         if (withinA && withinB) {
             result[0] = x;
             result[1] = y;
         } else {
-            result[0] = Double.POSITIVE_INFINITY;
-            result[1] = Double.POSITIVE_INFINITY;
+            return null;
         }
     
         return result;
