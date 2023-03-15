@@ -16,7 +16,7 @@ public class CtrlGame implements Initializable {
     @FXML
     private Canvas canvas;
 
-    private static CtrlGameCanvas drawing = new CtrlGameCanvas();
+    private static CtrlGameCanvas ctrlCanvas = new CtrlGameCanvas();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -31,11 +31,11 @@ public class CtrlGame implements Initializable {
     }
 
     public void drawingStart () {
-        drawing.start(canvas);
+        ctrlCanvas.start(canvas);
     }
 
     public void drawingStop () {
-        drawing.stop();
+        ctrlCanvas.stop();
     }
 
     public void updateCanvasSize () {
@@ -53,23 +53,23 @@ public class CtrlGame implements Initializable {
         // Quan apretem una tecla
         if (evt.getEventType() == KeyEvent.KEY_PRESSED) {
             if (evt.getCode() == KeyCode.LEFT) {
-                drawing.playerDirection = "left";
+                ctrlCanvas.playerDirection = "left";
             }
             if (evt.getCode() == KeyCode.RIGHT) {
-                drawing.playerDirection = "right";
+                ctrlCanvas.playerDirection = "right";
             }
         }
 
         // Quan deixem anar la tecla
         if (evt.getEventType() == KeyEvent.KEY_RELEASED) {
             if (evt.getCode() == KeyCode.LEFT) {
-                if (drawing.playerDirection.equals("left")) {
-                    drawing.playerDirection = "none";
+                if (ctrlCanvas.playerDirection.equals("left")) {
+                    ctrlCanvas.playerDirection = "none";
                 }
             }
             if (evt.getCode() == KeyCode.RIGHT) {
-                if (drawing.playerDirection.equals("right")) {
-                    drawing.playerDirection = "none";
+                if (ctrlCanvas.playerDirection.equals("right")) {
+                    ctrlCanvas.playerDirection = "none";
                 }
             }
         }
