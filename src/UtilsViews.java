@@ -9,17 +9,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class UtilsViews {
 
-    public static Stage stage;
     public static StackPane parentContainer = new StackPane();
     public static ArrayList<Object> controllers = new ArrayList<>();
 
     // Add one view to the list
     public static void addView(Class<?> cls, String name, String path) throws Exception {
+        
         boolean defaultView = false;
         FXMLLoader loader = new FXMLLoader(cls.getResource(path));
         Pane view = loader.load();
@@ -53,11 +52,8 @@ public class UtilsViews {
     // Set visible view by its id (viewId)
     public static void setView(String viewId) {
 
-        // Get root of the scene
-        StackPane root = (StackPane) stage.getScene().getRoot();
-
         ArrayList<Node> list = new ArrayList<>();
-        list.addAll(root.getChildrenUnmodifiable());
+        list.addAll(parentContainer.getChildrenUnmodifiable());
 
         // Show next view, hide others
         for (Node n : list) {
@@ -71,17 +67,14 @@ public class UtilsViews {
         }
 
         // Remove focus from buttons
-        root.requestFocus();
+        parentContainer.requestFocus();
     }
 
     // Set visible view by its id (viewId) with an animation
     public static void setViewAnimating(String viewId) {
 
-        // Get root of the scene
-        StackPane root = (StackPane) stage.getScene().getRoot();
-
         ArrayList<Node> list = new ArrayList<>();
-        list.addAll(root.getChildrenUnmodifiable());
+        list.addAll(parentContainer.getChildrenUnmodifiable());
 
         // Get current view
         Node curView = null;
@@ -108,7 +101,7 @@ public class UtilsViews {
         nxtView.setManaged(true);
 
         // By default, set animation to the left
-        double width = stage.getScene().getWidth();
+        double width = parentContainer.getScene().getWidth();
         double xLeftStart = 0;
         double xLeftEnd = 0;
         double xRightStart = 0;
@@ -169,6 +162,6 @@ public class UtilsViews {
         timelineRight.play();
 
         // Remove focus from buttons
-        root.requestFocus();
+        parentContainer.requestFocus();
     }
 }
