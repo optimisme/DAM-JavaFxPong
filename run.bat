@@ -1,12 +1,47 @@
-rem run with; .\run.bat
+@echo off
 
-cls
-rm -r -force .\bin
-rm -r -force .\src\.*
-rm -r -force .\lib\javafx-windows\lib\.*
-mkdir bin
-xcopy .\assets .\bin\assets /E /I /Y
+REM Remove any existing Project.jar file
+if exist .\release rmdir /s /q .\release
 
-javac --module-path .\lib\javafx-windows\lib --add-modules javafx.controls,javafx.fxml -cp ".\\;.\\bin\\;.\\lib\\Java-WebSocket-1.5.3.jar;.\\lib\\slf4j-api-2.0.3.jar;.\\lib\\slf4j-simple-2.0.3.jar;.\\lib\\json-20220924.jar" -d .\bin\ .\src\*.java
-java  --module-path .\lib\javafx-windows\lib --add-modules javafx.controls,javafx.fxml -cp ".\\;.\\bin\\;.\\lib\\Java-WebSocket-1.5.3.jar;.\\lib\\slf4j-api-2.0.3.jar;.\\lib\\slf4j-simple-2.0.3.jar;.\\lib\\json-20220924.jar" Main
+REM Remove any existing .class files from the bin directory
+if exist .\bin rmdir /s /q .\bin
 
+REM Create the bin directory if it doesn't exist
+if not exist .\bin mkdir .\bin
+
+REM Copy the assets directory to the bin directory
+xcopy /E /I .\assets .\bin\assets
+
+REM Generate the CLASSPATH by iterating over JAR files in the lib directory and its subdirectories
+SETLOCAL ENABLEDELAYEDEXPANSION
+SET lib_dir=lib
+SET class_path=;
+FOR /R %lib_dir% %%G IN (*.jar) DO (
+   if not "%%~nxG"=="javafx.jar" (
+       SET class_path=!class_path!;%%G
+   )
+)
+SET CLASSPATH=%class_path:~1%
+
+SET MODULEPATH=.\lib\javafx-windows\lib
+SET ICON=
+
+REM Compile the Java source files and place the .class files in the bin directory
+javac -d .\bin\ .\src\*.java --module-path %MODULEPATH% --add-modules javafx.controls,javafx.fxml
+
+REM Create the Project.jar file with the specified manifest file and the contents of the bin directory
+echo Main-Class: Main > .\Manifest.txt
+echo Class-Path: . >> .\Manifest.txt
+jar cfm .\release\Project.jar .\Manifest.txt -C .\bin\ .
+del .\Manifest.txt
+
+REM Copy the lib directory to the release directory
+xcopy /E /I .\lib .\release\lib
+
+REM Remove any .class files from the bin directory
+if exist .\bin rmdir /s /q .\bin
+
+REM Run the Project.jar file
+cd .\release
+java %ICON% --module-path %MODULEPATH% --add-modules javafx.controls,javafx.fxml -cp Project.jar;%CLASSPATH% Main
+cd ..
