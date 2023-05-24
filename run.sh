@@ -3,7 +3,7 @@
 reset
 
 # Remove any existing Project.jar file
-rm Project.jar
+rm -rf ./release
 
 # Remove any existing .class files from the bin directory
 rm -rf ./bin
@@ -50,12 +50,13 @@ fi
 javac -d ./bin/ ./src/*.java --module-path $MODULEPATH --add-modules javafx.controls,javafx.fxml
 
 # Create the Project.jar file with the specified manifest file and the contents of the bin directory
-jar cfm Project.jar ./src/Manifest.txt -C bin . 
+jar cfm release/Project.jar ./src/Manifest.txt -C bin . 
+cp -r ./lib ./release
 
 # Remove any .class files from the bin directory
 rm -rf ./bin
 
 # Run the Project.jar file
-echo $CLASSPATH
+cd release
 java $ICON --module-path $MODULEPATH --add-modules javafx.controls,javafx.fxml -cp Project.jar:$CLASSPATH Main
-
+cd ..
