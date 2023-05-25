@@ -42,12 +42,12 @@ fi
 
 if [[ $OSTYPE == 'darwin'* ]] && [[ $(arch) == 'i386' ]]; then
     export MODULEPATH=./lib/javafx-osx-intel/lib
-    export ICON=-Xdock:icon=icon.png
+    export ICON=-Xdock:icon=iconOSX.png
 fi
 
 if [[ $OSTYPE == 'darwin'* ]] && [[ $(arch) == 'arm64' ]]; then
     export MODULEPATH=./lib/javafx-osx-arm/lib
-    export ICON=-Xdock:icon=icon.png
+    export ICON=-Xdock:icon=iconOSX.png
 fi
 
 # Compile the Java source files and place the .class files in the bin directory
@@ -68,7 +68,7 @@ mkdir -p ./$folderRelease
 mv ./$folderDevelopment/Project.jar ./$folderRelease/Project.jar
 cp -r ./$folderDevelopment/lib ./$folderRelease/lib
 if [[ $OSTYPE == 'darwin'* ]]; then
-    cp -r ./$folderDevelopment/assets/icon.png ./$folderRelease/icon.png
+    cp -r ./$folderDevelopment/assets/iconOSX.png ./$folderRelease/iconOSX.png
 fi
 
 # Create the 'run.sh' file
