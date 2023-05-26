@@ -16,6 +16,7 @@ mkdir -p ./bin
 
 # Copy the assets directory to the bin directory
 cp -r ./assets ./bin
+cp -r ./icons ./bin
 
 # Generate the CLASSPATH by iterating over JAR files in the lib directory and its subdirectories
 lib_dir="lib"
@@ -42,7 +43,7 @@ fi
 
 if [[ $OSTYPE == 'darwin'* ]] && [[ $(arch) == 'i386' ]]; then
     export MODULEPATH=./lib/javafx-osx-intel/lib
-    export ICON=-Xdock:icon=iconOSX.png
+    export ICON=-Xdock:icon=icons/iconOSX.png
 fi
 
 if [[ $OSTYPE == 'darwin'* ]] && [[ $(arch) == 'arm64' ]]; then
@@ -67,8 +68,10 @@ rm -rf ./$folderRelease
 mkdir -p ./$folderRelease
 mv ./$folderDevelopment/Project.jar ./$folderRelease/Project.jar
 cp -r ./$folderDevelopment/lib ./$folderRelease/lib
+
+# If OSX copy the icon to the release directory
 if [[ $OSTYPE == 'darwin'* ]]; then
-    cp -r ./$folderDevelopment/assets/iconOSX.png ./$folderRelease/iconOSX.png
+    cp -r ./$folderDevelopment/icons/iconOSX.png ./$folderRelease/iconOSX.png
 fi
 
 # Create the 'run.sh' file

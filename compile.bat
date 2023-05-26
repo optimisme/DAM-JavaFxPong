@@ -14,6 +14,7 @@ mkdir .\bin
 
 rem Copy the assets directory to the bin directory
 xcopy .\assets .\bin /E /I
+xcopy .\icons .\bin /E /I
 
 rem Generate the CLASSPATH by iterating over JAR files in the lib directory and its subdirectories
 set "lib_dir=lib"
@@ -35,15 +36,6 @@ if "%OSTYPE%"=="linux-gnu" (
     set "ICON="
 )
 
-if "%OSTYPE%"=="darwin" (
-    if "%PROCESSOR_ARCHITECTURE%"=="AMD64" (
-        set "MODULEPATH=./lib/javafx-osx-intel/lib"
-    ) else if "%PROCESSOR_ARCHITECTURE%"=="ARM64" (
-        set "MODULEPATH=./lib/javafx-osx-arm/lib"
-    )
-    set "ICON=-Xdock:icon=icon.png"
-)
-
 rem Compile the Java source files and place the .class files in the bin directory
 javac -d .\bin .\src\*.java --module-path %MODULEPATH% --add-modules javafx.controls,javafx.fxml
 
@@ -61,9 +53,6 @@ rmdir /s /q .\%folderRelease%
 mkdir .\%folderRelease%
 move .\%folderDevelopment%\Project.jar .\%folderRelease%\Project.jar
 xcopy .\%folderDevelopment%\lib .\%folderRelease%\lib /E /I
-if "%OSTYPE%"=="darwin" (
-    xcopy .\%folderDevelopment%\assets\icon.png .\%folderRelease%\icon.png /Y
-)
 
 rem Create the 'run.bat' file
 (
