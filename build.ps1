@@ -121,6 +121,7 @@ if ((Test-Path -Path ".\$folderDevelopment\icons") -and $isJavaFX) {
 # Create the 'run.sh' and 'run.ps1' files
 if (-not $isJavaFX) {
 @"
+#!/bin/bash
 java -cp "Project.jar;$CLASSPATHX" Main
 "@ | Out-File -FilePath ".\$folderRelease\run.sh" -Encoding UTF8
 @"
@@ -128,6 +129,7 @@ java -cp "Project.jar;$CLASSPATH" Main
 "@ | Out-File -FilePath ".\$folderRelease\run.ps1" -Encoding UTF8
 } else {
 @"
+#!/bin/bash
 MODULEPATH=""
 ICON=""
 if ls lib/javafx* 1> /dev/null 2>&1; then
