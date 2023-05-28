@@ -118,13 +118,13 @@ fi
 # Add Project.jar to classpath
 CLASSPATHX=${CLASSPATHX/#"-cp "/}
 if [ -n "$CLASSPATHX" ]; then
-    CLASSPATHX="-cp \"$CLASSPATHX:Project.jar\""
+    CLASSPATHX="-cp \"Project.jar:$CLASSPATHX\""
 else
     CLASSPATHX="-cp \"Project.jar\""
 fi
 CLASSPATHW=${CLASSPATHW/#"-cp "/}
 if [ -n "$CLASSPATHW" ]; then
-    CLASSPATHW="-cp \"$CLASSPATHW;Project.jar\""
+    CLASSPATHW="-cp \"Project.jar;$CLASSPATHW\""
 else
     CLASSPATHW="-cp \"Project.jar\""
 fi
