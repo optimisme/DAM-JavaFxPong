@@ -142,7 +142,6 @@ cat > ./$folderRelease/run.sh << EOF
 MODULEPATH=""
 ICON=""
 if ls lib/javafx* 1> /dev/null 2>&1; then
-    isJavaFX=true
     if [[ \$OSTYPE == 'linux-gnu' ]]; then
         MODULEPATH=./lib/javafx-linux/lib
     fi
@@ -169,4 +168,4 @@ chmod +x ./$folderRelease/run.sh
 # Run the Project.jar file
 cd ./$folderRelease
 ./run.sh
-cd ..
+cd 
