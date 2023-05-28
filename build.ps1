@@ -146,10 +146,10 @@ if ls lib/javafx* 1> /dev/null 2>&1; then
         ICON=-Xdock:icon=icons/iconOSX.png
     fi
 fi
-java `$ICON --module-path `$MODULEPATH --add-modules javafx.controls,javafx.fxml -cp "Project.jar:$CLASSPATH" Main
+java `$ICON --module-path `$MODULEPATH --add-modules javafx.controls,javafx.fxml -cp "Project.jar:$CLASSPATHX" Main
 "@ | Out-File -FilePath ".\$folderRelease\run.sh" -Encoding UTF8
 @"
-java --module-path "./lib/javafx-windows/lib" --add-modules javafx.controls,javafx.fxml -cp "Project.jar;$CLASSPATHWIN" Main
+java --module-path "./lib/javafx-windows/lib" --add-modules javafx.controls,javafx.fxml -cp "Project.jar;$CLASSPATH" Main
 "@ | Out-File -FilePath ".\$folderRelease\run.ps1" -Encoding UTF8
 }
 
