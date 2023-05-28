@@ -90,11 +90,8 @@ if ($CLASSPATHX) {
     $CLASSPATHX = "-cp " + $CLASSPATHX
 }
 
-
-
-
 # Compile the Java source files and place the .class files in the bin directory
-javac -d ./bin/ ./src/*.java $CLASSPATHW $MODULEPATH
+& "javac -d ./bin/ ./src/*.java $CLASSPATHW $MODULEPATH"
 
 # Create the Project.jar file with the specified manifest file and the contents of the bin directory
 if (Get-Command jar -ErrorAction SilentlyContinue) {
