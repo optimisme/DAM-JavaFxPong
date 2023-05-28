@@ -148,7 +148,7 @@ if ($CLASSPATHX) {
 } else {
     $CLASSPATHX = "-cp `"Project.jar`""
 }
-$CLASSPATHW = $CLASSPATHW -replace "-cp ", ""
+$CLASSPATHW = $CLASSPATHW -replace "-cp `"", ""
 if ($CLASSPATHW) {
     $CLASSPATHW = "-cp `"Project.jar;$CLASSPATHW"
 } else {

@@ -122,7 +122,7 @@ if [ -n "$CLASSPATHX" ]; then
 else
     CLASSPATHX="-cp \"Project.jar\""
 fi
-CLASSPATHW=${CLASSPATHW/#"-cp "/}
+CLASSPATHW=${CLASSPATHW/#"-cp \""/}
 if [ -n "$CLASSPATHW" ]; then
     CLASSPATHW="-cp \"Project.jar;$CLASSPATHW"
 else
