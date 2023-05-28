@@ -24,6 +24,16 @@ if ls lib/javafx* 1> /dev/null 2>&1; then
     fi
 fi
 
+# Check if is Hibernate
+isHibernate=false
+HIBERNATEX=""
+HIBERNATEWIN=""
+if [ -n "$(find . -maxdepth 1 -type f -name 'hibernate.properties' -print -quit)" ]; then
+    isHibernate=true
+    HIBERNATEX="--add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED"
+    HIBERNATEWIN="--add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --enable-preview -XX:+ShowCodeDetailsInExceptionMessages"
+fi
+
 # Remove any existing .class files from the bin directory
 rm -rf ./bin
 
@@ -100,14 +110,19 @@ if [ -n "$(find ./$folderDevelopment -maxdepth 1 -type f -name '*.properties' -p
     cp -r ./$folderDevelopment/*.properties ./$folderRelease/
 fi
 
+# Copy .xml if they exist (for Hibernate)
+if [ -n "$(find ./$folderDevelopment -maxdepth 1 -type f -name '*.xml' -print -quit)" ]; then
+    cp -r ./$folderDevelopment/*.xml ./$folderRelease/
+fi
+
 # Create the 'run.sh' and 'run.ps1' files
 if [ "$isJavaFX" != true ]; then
 cat > ./$folderRelease/run.sh << EOF
 #!/bin/bash
-java -cp "Project.jar:$CLASSPATH" Main
+java $HIBERNATEX -cp "Project.jar:$CLASSPATH" Main
 EOF
 cat > ./$folderRelease/run.ps1 << EOF
-java -cp "Project.jar;$CLASSPATHWIN" Main
+java $HIBERNATEWIN -cp "Project.jar;$CLASSPATHWIN" Main
 EOF
 else
 cat > ./$folderRelease/run.sh << EOF
@@ -128,10 +143,10 @@ if ls lib/javafx* 1> /dev/null 2>&1; then
         ICON=-Xdock:icon=icons/iconOSX.png
     fi
 fi
-java \$ICON --module-path \$MODULEPATH --add-modules javafx.controls,javafx.fxml -cp "Project.jar:$CLASSPATH" Main
+java $HIBERNATEX \$ICON --module-path \$MODULEPATH --add-modules javafx.controls,javafx.fxml -cp "Project.jar:$CLASSPATH" Main
 EOF
 cat > ./$folderRelease/run.ps1 << EOF
-java --module-path "./lib/javafx-windows/lib" --add-modules javafx.controls,javafx.fxml -cp "Project.jar;$CLASSPATHWIN" Main
+java $HIBERNATEWIN --module-path "./lib/javafx-windows/lib" --add-modules javafx.controls,javafx.fxml -cp "Project.jar;$CLASSPATHWIN" Main
 EOF
 fi
 
