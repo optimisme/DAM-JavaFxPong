@@ -1,56 +1,51 @@
-import java.util.HashSet;
-import java.util.Set;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
-/*
+public class Main extends Application {
 
-Help: https://howtodoinjava.com/hibernate/hibernate-many-to-many-mapping/
+    private CtrlGame ctrlGame;
 
-Compile and run from command line:
+    public static void main(String[] args) {
 
-   ./run.sh on linux and mac
-   .\run.bat on windows
+        // Iniciar app JavaFX   
+        launch(args);
+    }
+    
+    @Override
+    public void start(Stage stage) throws Exception {
 
-For VisualStudio add: 
-"vmArgs": "--add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED" 
-at .vscode/launch.json
+        final int windowWidth = 800;
+        final int windowHeight = 600;
 
-*/
+        UtilsViews.parentContainer.setStyle("-fx-font: 14 arial;");
+        UtilsViews.addView(getClass(), "ViewGame", "assets/viewGame.fxml");
+        ctrlGame = (CtrlGame) UtilsViews.getController("ViewGame");
+        
+        Scene scene = new Scene(UtilsViews.parentContainer);
+        scene.addEventFilter(KeyEvent.ANY, keyEvent -> { ctrlGame.keyEvent(keyEvent); });
+        
+        stage.setScene(scene);
+        stage.onCloseRequestProperty(); // Call close method when closing window
+        stage.setTitle("JavaFX - Pong");
+        stage.setMinWidth(windowWidth);
+        stage.setMinHeight(windowHeight);
+        stage.addEventHandler(WindowEvent.WINDOW_SHOWN, event -> { ctrlGame.drawingStart(); });
+        stage.show();
 
-public class Main {
+        // Add icon only if not Mac
+        if (!System.getProperty("os.name").contains("Mac")) {
+            Image icon = new Image("file:icons/icon.png");
+            stage.getIcons().add(icon);
+        }
+    }
 
-   public static void main(String[] args) {
-      
-      Manager.createSessionFactory();
-
-      Employee refEmp1 = Manager.addEmployee("Employee 1", "Aes", 1000);
-      Employee refEmp2 = Manager.addEmployee("Employee 2", "Bes", 2000);
-      Employee refEmp3 = Manager.addEmployee("Employee 3", "Ces", 3000);
-      Employee refEmp4 = Manager.addEmployee("Employee 4", "Des", 4000);
-
-      Contact refCon1 = Manager.addContact("Contact 1", "ves@a.com");
-      Contact refCon2 = Manager.addContact("Contact 2", "wes@a.com");
-      Manager.addContact("Contact 3", "xes@ga.com");
-      Manager.addContact("Contact 4", "yes@ga.com");
-      Contact refCon5 = Manager.addContact("Contact 5", "zes@ga.com");
-
-      Manager.updateEmployee(refEmp1.getEmployeeId(), refEmp1.getFirstName(), refEmp1.getLastName(), 55);
-
-      Set<Employee> employeesEmp1 = new HashSet<Employee>();
-      employeesEmp1.add(refEmp2);
-      employeesEmp1.add(refEmp3);
-      Manager.updateContact(refCon1.getContactId(), refCon1.getName(), refCon1.getEmail(), employeesEmp1);
-
-      Set<Employee> employeesEmp2 = new HashSet<Employee>();
-      employeesEmp2.add(refEmp1);
-      employeesEmp2.add(refEmp2);
-      Manager.updateContact(refCon2.getContactId(), refCon1.getName(), refCon1.getEmail(), employeesEmp2);
-
-      Manager.delete(Employee.class, refEmp4.getEmployeeId());
-      Manager.delete(Contact.class, refCon5.getContactId());
-
-      System.out.println(Manager.collectionToString(Employee.class, Manager.listCollection(Employee.class)));
-      System.out.println(Manager.collectionToString(Contact.class, Manager.listCollection(Contact.class)));
-
-      Manager.close();
-   }
+    @Override
+    public void stop() { 
+        ctrlGame.drawingStop();
+        System.exit(1); // Kill all executor services
+    }
 }
