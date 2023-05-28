@@ -132,19 +132,19 @@ MODULEPATH=""
 ICON=""
 if ls lib/javafx* 1> /dev/null 2>&1; then
     isJavaFX=true
-    if [[ \$OSTYPE == 'linux-gnu' ]]; then
+    if [[ `$OSTYPE == 'linux-gnu' ]]; then
         MODULEPATH=./lib/javafx-linux/lib
     fi
-    if [[ \$OSTYPE == 'darwin'* ]] && [[ \$(arch) == 'i386' ]]; then
+    if [[ `$OSTYPE == 'darwin'* ]] && [[ `$(arch) == 'i386' ]]; then
         MODULEPATH=./lib/javafx-osx-intel/lib
         ICON=-Xdock:icon=icons/iconOSX.png
     fi
-    if [[ \$OSTYPE == 'darwin'* ]] && [[ \$(arch) == 'arm64' ]]; then
+    if [[ `$OSTYPE == 'darwin'* ]] && [[ `$(arch) == 'arm64' ]]; then
         MODULEPATH=./lib/javafx-osx-arm/lib
         ICON=-Xdock:icon=icons/iconOSX.png
     fi
 fi
-java \$ICON --module-path \$MODULEPATH --add-modules javafx.controls,javafx.fxml -cp "Project.jar:$CLASSPATH" Main
+java `$ICON --module-path `$MODULEPATH --add-modules javafx.controls,javafx.fxml -cp "Project.jar:$CLASSPATH" Main
 "@ | Out-File -FilePath ".\$folderRelease\run.sh" -Encoding UTF8
 @"
 java --module-path "./lib/javafx-windows/lib" --add-modules javafx.controls,javafx.fxml -cp "Project.jar;$CLASSPATHWIN" Main
