@@ -168,7 +168,6 @@ java $HIBERNATEW $CLASSPATHW Main
 MODULEPATH=""
 ICON=""
 if ls lib/javafx* 1> /dev/null 2>&1; then
-    isJavaFX=true
     if [[ `$OSTYPE == 'linux-gnu' ]]; then
         MODULEPATH=./lib/javafx-linux/lib
     fi
