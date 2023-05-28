@@ -79,7 +79,7 @@ $CLASSPATHX = ($jar_files | ForEach-Object {
 if (-not $isJavaFX) {
     javac -d ./bin/ ./src/*.java -cp $CLASSPATH
 } else {
-    javac -d ./bin/ ./src/*.java -cp $CLASSPATH --module-path ./lib/javafx-osx-arm/lib --add-modules javafx.controls,javafx.fxml
+    javac -d ./bin/ ./src/*.java -cp $CLASSPATH --module-path ./lib/javafx-windows/lib --add-modules javafx.controls,javafx.fxml
 }
 
 # Create the Project.jar file with the specified manifest file and the contents of the bin directory
