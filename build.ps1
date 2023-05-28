@@ -142,15 +142,15 @@ if (Test-Path -Path ".\$folderDevelopment\*.xml" -PathType Leaf) {
 }
 
 # Add Project.jar to classpath
-$CLASSPATHX = $CLASSPATHX -replace "-cp ", ""
+$CLASSPATHX = $CLASSPATHX -replace "-cp `"", ""
 if ($CLASSPATHX) {
-    $CLASSPATHX = "-cp `"Project.jar:$CLASSPATHX`""
+    $CLASSPATHX = "-cp `"Project.jar:$CLASSPATHX"
 } else {
     $CLASSPATHX = "-cp `"Project.jar`""
 }
 $CLASSPATHW = $CLASSPATHW -replace "-cp ", ""
 if ($CLASSPATHW) {
-    $CLASSPATHW = "-cp `"Project.jar;$CLASSPATHW`""
+    $CLASSPATHW = "-cp `"Project.jar;$CLASSPATHW"
 } else {
     $CLASSPATHW = "-cp `"Project.jar`""
 }

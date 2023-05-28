@@ -116,15 +116,15 @@ if [ -n "$(find ./$folderDevelopment -maxdepth 1 -type f -name '*.xml' -print -q
 fi
 
 # Add Project.jar to classpath
-CLASSPATHX=${CLASSPATHX/#"-cp "/}
+CLASSPATHX=${CLASSPATHX/#"-cp \""/}
 if [ -n "$CLASSPATHX" ]; then
-    CLASSPATHX="-cp \"Project.jar:$CLASSPATHX\""
+    CLASSPATHX="-cp \"Project.jar:$CLASSPATHX"
 else
     CLASSPATHX="-cp \"Project.jar\""
 fi
 CLASSPATHW=${CLASSPATHW/#"-cp "/}
 if [ -n "$CLASSPATHW" ]; then
-    CLASSPATHW="-cp \"Project.jar;$CLASSPATHW\""
+    CLASSPATHW="-cp \"Project.jar;$CLASSPATHW"
 else
     CLASSPATHW="-cp \"Project.jar\""
 fi
