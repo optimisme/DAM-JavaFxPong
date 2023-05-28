@@ -62,7 +62,7 @@ $CLASSPATHW = ($jar_files | ForEach-Object {
     } 
 }) -join ';'
 if ($CLASSPATHW) {
-    $CLASSPATHW = "-cp " + $CLASSPATHW
+    $CLASSPATHW = "-cp `"" + $CLASSPATHW + "`""
 }
 
 # Generate the CLASSPATHX for UNIX
@@ -89,7 +89,7 @@ $CLASSPATHX = ($jar_files | ForEach-Object {
     } 
 }) -join ':'
 if ($CLASSPATHX) {
-    $CLASSPATHX = "-cp " + $CLASSPATHX
+    $CLASSPATHX = "-cp `"" + $CLASSPATHX + "`""
 }
 
 # Compile the Java source files and place the .class files in the bin directory

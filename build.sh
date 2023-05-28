@@ -65,7 +65,7 @@ class_path=$(IFS=:; echo "${jar_files[*]}")
 # Remove the leading ':' from the class_path
 CLASSPATHX=${class_path#:}
 if [ -n "$CLASSPATHX" ]; then
-    CLASSPATHX="-cp $CLASSPATHX"
+    CLASSPATHX="-cp \"$CLASSPATHX\""
 fi
 
 # Unir els fitxers JAR en el class_path
@@ -75,7 +75,7 @@ class_path_win=$(echo "$class_path_win" | sed 's|lib/|.\\lib\\|g')
 # Eliminar el ':' inicial del class_path
 CLASSPATHW=${class_path_win#:}
 if [ -n "$CLASSPATHW" ]; then
-    CLASSPATHW="-cp $CLASSPATHW"
+    CLASSPATHW="-cp \"$CLASSPATHW\""
 fi
 
 # Compile the Java source files and place the .class files in the bin directory
