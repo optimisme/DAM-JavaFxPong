@@ -10,18 +10,18 @@ Set-Location $folderDevelopment
 
 # Check if is JavaFX
 $isJavaFX = $false
+$MODULEPATH=""
 if (Test-Path -Path "lib/javafx*" -ErrorAction SilentlyContinue) {
     $isJavaFX = $true
+    $MODULEPATH = "--module-path ./lib/javafx-windows/lib --add-modules javafx.controls,javafx.fxml"
 }
 
 # Check if is Hibernate
-$isHibernate=$false
 $HIBERNATEX=""
-$HIBERNATEWIN=""
+$HIBERNATEW=""
 if (Test-Path ".\hibernate.properties") {
-    $isHibernate=$true
     $HIBERNATEX="--add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED"
-    $HIBERNATEWIN="--add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --enable-preview -XX:+ShowCodeDetailsInExceptionMessages"
+    $HIBERNATEW="--add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --enable-preview -XX:+ShowCodeDetailsInExceptionMessages"
 }
 
 # Remove any existing .class files from the bin directory
@@ -42,12 +42,11 @@ if (Test-Path -Path "./icons") {
     Copy-Item -Recurse -Force ./icons ./bin/icons
 }
 
-# Generate the CLASSPATH by iterating over JAR files in the lib directory and its subdirectories
+# Generate the CLASSPATHW by iterating over JAR files in the lib directory and its subdirectories
 $lib_dir = (Resolve-Path "lib").Path
 $jar_files = @()
-if (-not $isJavaFX) {
-    $jar_files = Get-ChildItem -Path $lib_dir -Filter "*.jar" -Recurse | ForEach-Object { ".\lib\" + $_.FullName.Replace($lib_dir + '\', '') }
-} else {
+
+if (Test-Path -Path "./lib") {
     $jar_files = Get-ChildItem -Path $lib_dir -Filter "*.jar" -Recurse | ForEach-Object {
         if (-not $_.Name.Contains("javafx")) {
             ".\lib\" + $_.FullName.Replace($lib_dir + '\', '')
@@ -56,15 +55,18 @@ if (-not $isJavaFX) {
 }
 
 # Enclose paths with quotes if they contain spaces
-$CLASSPATH = ($jar_files | ForEach-Object { 
+$CLASSPATHW = ($jar_files | ForEach-Object { 
     if($_ -match '\s') {
         "`"" + $_ + "`""
     } else {
         $_
     } 
 }) -join ';'
+if ($CLASSPATHW) {
+    $CLASSPATHW = "-cp " + $CLASSPATHW
+}
 
-# Generate the CLASSPATH for UNIX
+# Generate the CLASSPATHX for UNIX
 $jar_files = @()
 if (-not $isJavaFX) {
     $jar_files = Get-ChildItem -Path $lib_dir -Filter "*.jar" -Recurse | ForEach-Object { "lib/" + $_.FullName.Replace($lib_dir + '\', '') }
@@ -84,13 +86,15 @@ $CLASSPATHX = ($jar_files | ForEach-Object {
         $_
     } 
 }) -join ':'
+if ($CLASSPATHX) {
+    $CLASSPATHX = "-cp " + $CLASSPATHX
+}
+
+
+
 
 # Compile the Java source files and place the .class files in the bin directory
-if (-not $isJavaFX) {
-    javac -d ./bin/ ./src/*.java -cp $CLASSPATH
-} else {
-    javac -d ./bin/ ./src/*.java -cp $CLASSPATH --module-path ./lib/javafx-windows/lib --add-modules javafx.controls,javafx.fxml
-}
+javac -d ./bin/ ./src/*.java $CLASSPATHW $MODULEPATH
 
 # Create the Project.jar file with the specified manifest file and the contents of the bin directory
 if (Get-Command jar -ErrorAction SilentlyContinue) {
@@ -118,7 +122,10 @@ if (Test-Path -Path "./$folderRelease") {
 }
 New-Item -ItemType Directory -Force -Path ./$folderRelease | Out-Null
 Move-Item ./$folderDevelopment/Project.jar ./$folderRelease/Project.jar
-Copy-Item -Recurse -Force "./$folderDevelopment/lib" "./$folderRelease/lib"
+
+if (Test-Path -Path "./$folderDevelopment/lib") {
+    Copy-Item -Recurse -Force "./$folderDevelopment/lib" "./$folderRelease/lib"
+}
 
 if ((Test-Path -Path ".\$folderDevelopment\icons") -and $isJavaFX) {
     Copy-Item -Path ".\$folderDevelopment\icons" -Destination ".\$folderRelease\icons" -Recurse
@@ -134,14 +141,26 @@ if (Test-Path -Path ".\$folderDevelopment\*.xml" -PathType Leaf) {
     Copy-Item -Path ".\$folderDevelopment\*.xml" -Destination ".\$folderRelease\" -Force
 }
 
+# Add Project.jar to classpath
+if ($CLASSPATHW) {
+    $CLASSPATHW = $CLASSPATHW + ";Project.jar"
+} else {
+    $CLASSPATHW = "-cp Project.jar"
+}
+if ($CLASSPATHX) {
+    $CLASSPATHX = $CLASSPATHX + ":Project.jar"
+} else {
+    $CLASSPATHX = "-cp Project.jar"
+}
+
 # Create the 'run.sh' and 'run.ps1' files
 if (-not $isJavaFX) {
 @"
 #!/bin/bash
-java $HIBERNATEX -cp "Project.jar;$CLASSPATHX" Main
+java $HIBERNATEX $CLASSPATHX Main
 "@ | Out-File -FilePath ".\$folderRelease\run.sh" -Encoding UTF8
 @"
-java $HIBERNATEWIN -cp "Project.jar;$CLASSPATH" Main
+java $HIBERNATEW $CLASSPATHW Main
 "@ | Out-File -FilePath ".\$folderRelease\run.ps1" -Encoding UTF8
 } else {
 @"
@@ -161,11 +180,12 @@ if ls lib/javafx* 1> /dev/null 2>&1; then
         MODULEPATH=./lib/javafx-osx-arm/lib
         ICON=-Xdock:icon=icons/iconOSX.png
     fi
+    MODULEPATH="--module-path `$MODULEPATH --add-modules javafx.controls,javafx.fxml"
 fi
-java $HIBERNATEX `$ICON --module-path `$MODULEPATH --add-modules javafx.controls,javafx.fxml -cp "Project.jar:$CLASSPATHX" Main
+java $HIBERNATEX `$ICON `$MODULEPATH $CLASSPATHX Main
 "@ | Out-File -FilePath ".\$folderRelease\run.sh" -Encoding UTF8
 @"
-java $HIBERNATEWIN --module-path "./lib/javafx-windows/lib" --add-modules javafx.controls,javafx.fxml -cp "Project.jar;$CLASSPATH" Main
+java $HIBERNATEW $MODULEPATH $CLASSPATHW Main
 "@ | Out-File -FilePath ".\$folderRelease\run.ps1" -Encoding UTF8
 }
 

@@ -10,7 +10,6 @@ cd $folderDevelopment
 
 # Check if is JavaFX
 isJavaFX=false
-MODULEPATH=""
 if ls lib/javafx* 1> /dev/null 2>&1; then
     isJavaFX=true
     if [[ $OSTYPE == 'linux-gnu' ]]; then
@@ -22,16 +21,15 @@ if ls lib/javafx* 1> /dev/null 2>&1; then
     if [[ $OSTYPE == 'darwin'* ]] && [[ $(arch) == 'arm64' ]]; then
         MODULEPATH=./lib/javafx-osx-arm/lib
     fi
+    MODULEPATH="--module-path $MODULEPATH --add-modules javafx.controls,javafx.fxml"
 fi
 
 # Check if is Hibernate
-isHibernate=false
 HIBERNATEX=""
-HIBERNATEWIN=""
+HIBERNATEW=""
 if [ -n "$(find . -maxdepth 1 -type f -name 'hibernate.properties' -print -quit)" ]; then
-    isHibernate=true
     HIBERNATEX="--add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED"
-    HIBERNATEWIN="--add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --enable-preview -XX:+ShowCodeDetailsInExceptionMessages"
+    HIBERNATEW="--add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --enable-preview -XX:+ShowCodeDetailsInExceptionMessages"
 fi
 
 # Remove any existing .class files from the bin directory
@@ -53,11 +51,7 @@ lib_dir="lib"
 jar_files=()
 
 # Find all JAR files in the lib directory and its subdirectories
-if [ "$isJavaFX" != true ]; then
-    while IFS= read -r -d '' jar_file; do
-    jar_files+=("$jar_file")
-    done < <(find "$lib_dir" -name "*.jar" -type f -print0)
-else
+if [ -d ./lib ]; then
     while IFS= read -r -d '' jar_file; do
     if [[ "$jar_file" != *"javafx"* ]]; then
         jar_files+=("$jar_file")
@@ -69,21 +63,23 @@ fi
 class_path=$(IFS=:; echo "${jar_files[*]}")
 
 # Remove the leading ':' from the class_path
-CLASSPATH=${class_path#:}
+CLASSPATHX=${class_path#:}
+if [ -n "$CLASSPATHX" ]; then
+    CLASSPATHX="-cp $CLASSPATHX"
+fi
 
 # Unir els fitxers JAR en el class_path
 class_path_win=$(IFS=";"; printf "%s" "${jar_files[*]}")
 class_path_win=$(echo "$class_path_win" | sed 's|lib/|.\\lib\\|g')
 
 # Eliminar el ':' inicial del class_path
-CLASSPATHWIN=${class_path_win#:}
+CLASSPATHW=${class_path_win#:}
+if [ -n "$CLASSPATHW" ]; then
+    CLASSPATHW="-cp $CLASSPATHW"
+fi
 
 # Compile the Java source files and place the .class files in the bin directory
-if [ "$isJavaFX" != true ]; then
-    javac -d ./bin/ ./src/*.java -cp $CLASSPATH
-else
-    javac -d ./bin/ ./src/*.java --module-path $MODULEPATH --add-modules javafx.controls,javafx.fxml
-fi
+javac -d ./bin/ ./src/*.java $CLASSPATHX $MODULEPATH
 
 # Create the Project.jar file with the specified manifest file and the contents of the bin directory
 jar cfm ./Project.jar ./Manifest.txt -C bin .
@@ -98,7 +94,11 @@ cd ..
 rm -rf ./$folderRelease
 mkdir -p ./$folderRelease
 mv ./$folderDevelopment/Project.jar ./$folderRelease/Project.jar
-cp -r ./$folderDevelopment/lib ./$folderRelease/lib
+
+# Copy lib if it exists
+if [ -d ./$folderDevelopment/lib ]; then
+    cp -r ./$folderDevelopment/lib ./$folderRelease/lib
+fi
 
 # Copy icons if they exist
 if [ -d ./$folderDevelopment/icons ] && [ "$isJavaFX" = true ]; then
@@ -115,14 +115,26 @@ if [ -n "$(find ./$folderDevelopment -maxdepth 1 -type f -name '*.xml' -print -q
     cp -r ./$folderDevelopment/*.xml ./$folderRelease/
 fi
 
+# Add Project.jar to classpath
+if [ -n "$CLASSPATHX" ]; then
+    CLASSPATHX="$CLASSPATHX:Project.jar"
+else
+    CLASSPATHX="-cp Project.jar"
+fi
+if [ -n "$CLASSPATHW" ]; then
+    CLASSPATHW="$CLASSPATHW;Project.jar"
+else
+    CLASSPATHW="-cp Project.jar"
+fi
+
 # Create the 'run.sh' and 'run.ps1' files
 if [ "$isJavaFX" != true ]; then
 cat > ./$folderRelease/run.sh << EOF
 #!/bin/bash
-java $HIBERNATEX -cp "Project.jar:$CLASSPATH" Main
+java $HIBERNATEX $CLASSPATHX Main
 EOF
 cat > ./$folderRelease/run.ps1 << EOF
-java $HIBERNATEWIN -cp "Project.jar;$CLASSPATHWIN" Main
+java $HIBERNATEW $CLASSPATHW Main
 EOF
 else
 cat > ./$folderRelease/run.sh << EOF
@@ -142,11 +154,12 @@ if ls lib/javafx* 1> /dev/null 2>&1; then
         MODULEPATH=./lib/javafx-osx-arm/lib
         ICON=-Xdock:icon=icons/iconOSX.png
     fi
+    MODULEPATH="--module-path \$MODULEPATH --add-modules javafx.controls,javafx.fxml"
 fi
-java $HIBERNATEX \$ICON --module-path \$MODULEPATH --add-modules javafx.controls,javafx.fxml -cp "Project.jar:$CLASSPATH" Main
+java $HIBERNATEX \$ICON \$MODULEPATH $CLASSPATHX Main
 EOF
 cat > ./$folderRelease/run.ps1 << EOF
-java $HIBERNATEWIN --module-path "./lib/javafx-windows/lib" --add-modules javafx.controls,javafx.fxml -cp "Project.jar;$CLASSPATHWIN" Main
+java $HIBERNATEW --module-path "./lib/javafx-windows/lib" --add-modules javafx.controls,javafx.fxml $CLASSPATHW Main
 EOF
 fi
 
