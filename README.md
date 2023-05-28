@@ -1,6 +1,6 @@
 # Exemple Canvas JavaFX (Pong) #
 
-En aquest projecte hi ha un exemple de Pong en JavaFX
+En aquest projecte hi ha un exemple de Hibernate tipus JPA Many To Many
 
 ### Compilació i funcionament ###
 
