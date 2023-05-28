@@ -32,11 +32,6 @@ if (Test-Path -Path "./icons") {
     Copy-Item -Recurse -Force ./icons ./bin/icons
 }
 
-# Copy .properties if they exist
-if (Test-Path -Path ".\$folderDevelopment\*.properties" -PathType Leaf) {
-    Copy-Item -Path ".\$folderDevelopment\*.properties" -Destination ".\$folderRelease\" -Force
-}
-
 # Generate the CLASSPATH by iterating over JAR files in the lib directory and its subdirectories
 $lib_dir = (Resolve-Path "lib").Path
 $jar_files = @()
@@ -118,6 +113,12 @@ Copy-Item -Recurse -Force "./$folderDevelopment/lib" "./$folderRelease/lib"
 if ((Test-Path -Path ".\$folderDevelopment\icons") -and $isJavaFX) {
     Copy-Item -Path ".\$folderDevelopment\icons" -Destination ".\$folderRelease\icons" -Recurse
 }
+
+# Copy .properties if they exist
+if (Test-Path -Path ".\$folderDevelopment\*.properties" -PathType Leaf) {
+    Copy-Item -Path ".\$folderDevelopment\*.properties" -Destination ".\$folderRelease\" -Force
+}
+
 # Create the 'run.sh' and 'run.ps1' files
 if (-not $isJavaFX) {
 @"
