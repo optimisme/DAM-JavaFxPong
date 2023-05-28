@@ -1,3 +1,5 @@
+# PowerShell script to build the project
+
 Clear-Host
 
 $folderDevelopment = "Project"
