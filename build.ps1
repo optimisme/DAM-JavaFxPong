@@ -54,7 +54,7 @@ $CLASSPATH = ($jar_files | ForEach-Object {
     } 
 }) -join ';'
 
-# Generate the CLASSPATH or UNIX
+# Generate the CLASSPATH for UNIX
 $jar_files = @()
 if (-not $isJavaFX) {
     $jar_files = Get-ChildItem -Path $lib_dir -Filter "*.jar" -Recurse | ForEach-Object { "lib/" + $_.FullName.Replace($lib_dir + '\', '') }
