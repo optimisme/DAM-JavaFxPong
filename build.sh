@@ -116,15 +116,17 @@ if [ -n "$(find ./$folderDevelopment -maxdepth 1 -type f -name '*.xml' -print -q
 fi
 
 # Add Project.jar to classpath
+CLASSPATHX=${CLASSPATHX/#"-cp "/}
 if [ -n "$CLASSPATHX" ]; then
-    CLASSPATHX="$CLASSPATHX:Project.jar"
+    CLASSPATHX="-cp \"$CLASSPATHX:Project.jar\""
 else
-    CLASSPATHX="-cp Project.jar"
+    CLASSPATHX="-cp \"Project.jar\""
 fi
+CLASSPATHW=${CLASSPATHW/#"-cp "/}
 if [ -n "$CLASSPATHW" ]; then
-    CLASSPATHW="$CLASSPATHW;Project.jar"
+    CLASSPATHW="-cp \"$CLASSPATHW;Project.jar\""
 else
-    CLASSPATHW="-cp Project.jar"
+    CLASSPATHW="-cp \"Project.jar\""
 fi
 
 # Create the 'run.sh' and 'run.ps1' files

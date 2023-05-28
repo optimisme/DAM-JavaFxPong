@@ -140,15 +140,17 @@ if (Test-Path -Path ".\$folderDevelopment\*.xml" -PathType Leaf) {
 }
 
 # Add Project.jar to classpath
-if ($CLASSPATHW) {
-    $CLASSPATHW = $CLASSPATHW + ";Project.jar"
-} else {
-    $CLASSPATHW = "-cp Project.jar"
-}
+$CLASSPATHX = $CLASSPATHX -replace "-cp ", ""
 if ($CLASSPATHX) {
-    $CLASSPATHX = $CLASSPATHX + ":Project.jar"
+    $CLASSPATHX = "-cp `"$CLASSPATHX;Project.jar`""
 } else {
-    $CLASSPATHX = "-cp Project.jar"
+    $CLASSPATHX = "-cp `"Project.jar`""
+}
+$CLASSPATHW = $CLASSPATHW -replace "-cp ", ""
+if ($CLASSPATHW) {
+    $CLASSPATHW = "-cp `"$CLASSPATHW;Project.jar`""
+} else {
+    $CLASSPATHW = "-cp `"Project.jar`""
 }
 
 # Create the 'run.sh' and 'run.ps1' files
